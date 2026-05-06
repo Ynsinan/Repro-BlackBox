@@ -45,20 +45,22 @@
       <label class="toggle" id="limitToggle">
         <input type="checkbox" id="limitCheck" checked />
         <span class="toggle-track"><span class="toggle-thumb"></span></span>
-        <span class="toggle-label">Zaman sınırı (5 dk)</span>
+        <span class="toggle-label">5 dakika ile sınırla</span>
       </label>
 
       <div class="quality-row" id="qualityRow">
         <span class="quality-label">Kalite</span>
-        <select id="qualitySelect" class="quality-select">
-          <option value="low">Düşük · 720p · 15 fps · ~30 MB/5dk</option>
-          <option value="normal" selected>Normal · 1080p · 30 fps · ~55 MB/5dk</option>
-          <option value="high">Yüksek · 1080p · 60 fps · ~150 MB/5dk</option>
-          <option value="ultra">Ultra · 1440p · 60 fps · ~300 MB/5dk</option>
-        </select>
+        <div class="select-wrap">
+          <select id="qualitySelect" class="quality-select">
+            <option value="low">Düşük · 720p · 15 fps</option>
+            <option value="normal" selected>Normal · 1080p · 30 fps</option>
+            <option value="high">Yüksek · 1080p · 60 fps</option>
+            <option value="ultra">Ultra · 1440p · 60 fps</option>
+          </select>
+        </div>
       </div>
 
-      <p class="hint" id="hint">Bu sekmenin videosunu kaydeder. Maksimum 5 dakika.</p>
+      <p class="hint" id="hint">Bu sekmenin videosunu kaydeder.</p>
     </main>
 
     <script src="popup.js"></script>

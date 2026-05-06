@@ -87,15 +87,15 @@ async function refresh() {
     chipNetwork.textContent = `${s.counts.network} istek`;
 
     if (s.timeLimit === false) {
-      hint.textContent = 'Sınırsız modda kayıt sürüyor — durmak için butona basın.';
+      hint.textContent = 'Süre sınırı kapalı — kayıt elle durdurulana kadar sürer.';
       hint.classList.remove('warn');
     } else {
       const remain = MAX_DURATION_MS - elapsed;
       if (remain < 30000) {
-        hint.textContent = `Maksimum süreye ${Math.max(0, Math.ceil(remain / 1000))} sn kaldı.`;
+        hint.textContent = `Süre sınırı: ${Math.max(0, Math.ceil(remain / 1000))} sn kaldı.`;
         hint.classList.add('warn');
       } else {
-        hint.textContent = 'Bu sekmenin videosu kaydediliyor. Sayfayı kullanmaya devam edin.';
+        hint.textContent = 'Kayıt sürüyor — sayfayı normal şekilde kullanın.';
         hint.classList.remove('warn');
       }
     }
@@ -112,8 +112,16 @@ async function refresh() {
     limitCheck.disabled = false;
     qualityRow.classList.remove('disabled');
     qualitySelect.disabled = false;
-    hint.textContent = 'Bu sekmenin videosunu kaydeder. Maksimum 5 dakika.';
+    setIdleHint();
     hint.classList.remove('warn');
+  }
+}
+
+function setIdleHint() {
+  if (limitCheck.checked) {
+    hint.textContent = 'Sekme videosu kaydedilir. Süre 5 dakika ile sınırlıdır.';
+  } else {
+    hint.textContent = 'Sekme videosu kaydedilir. Süre sınırı yok.';
   }
 }
 
@@ -210,6 +218,7 @@ limitCheck.addEventListener('change', async () => {
   const prefs = await loadPrefs();
   prefs.timeLimit = limitCheck.checked;
   await savePrefs(prefs);
+  if (!statusBox.classList.contains('recording')) setIdleHint();
 });
 
 qualitySelect.addEventListener('change', async () => {

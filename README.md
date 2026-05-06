@@ -8,6 +8,9 @@ Görsel kayıt için harici kütüphane yok — Chrome'un native `chrome.tabCapt
 
 - 🔴 **Tek tıklama kayıt** — popup'tan başlat, popup'tan durdur
 - 🎥 **Gerçek video** — sekmenin `.webm` videosu (VS Code, QuickTime, Slack, Jira preview ile oynanır)
+- 🎚️ **4 kalite seviyesi** — Düşük (720p15) → Ultra (1440p60); ihtiyacına göre seç
+- 🔊 **Opsiyonel sayfa sesi** — sekmenin sesini de videoya gömer (toggle)
+- ⏱️ **Esnek süre** — varsayılan 5 dk güvenlik sınırı; kapatılırsa süre sınırsız
 - 🪵 **Console hijack** — `log/info/warn/error/debug` + uncaught error + unhandled rejection
 - 🌐 **Network yakalama** — `fetch` ve `XMLHttpRequest` request/response body dahil
 - 🔒 **Hassas veri filtresi** — `password`, `token`, `authorization`, `cookie`, `apiKey` vb. otomatik `[REDACTED]`
@@ -97,9 +100,9 @@ URL, tarayıcı, viewport, süre, video boyutu + özet (error/warning/başarıs�
 
 ## Kısıtlamalar
 
-- **Sadece sekme görüntüsü** — `tabCapture` sadece görsel; webcam/audio kaydetmez (manifest izni de yok)
+- **Sadece sekme görüntüsü** — `tabCapture` sadece görsel; webcam kaydetmez (sayfa sesi opsiyonel)
 - **chrome://, chrome-extension://, edge://, mağaza** sayfalarında çalışmaz
-- **Maksimum kayıt süresi: 5 dakika** — sonra otomatik durur
+- **Varsayılan süre sınırı: 5 dakika** — popup'taki "5 dakika ile sınırla" toggle'ı kapatılırsa kayıt elle durdurulana kadar sürer
 - **Body boyut limiti: 100 KB** — üzeri `[truncated]`
 - **Service Worker'dan giden** fetch çağrıları yakalanmaz (sayfa fetch/XHR'i yakalanır)
 - Cross-origin iframe'lerin **görüntüsü video'ya dahildir** ama içeriklerinin fetch/console'u yakalanmaz
@@ -147,7 +150,8 @@ Build step yok — vanilla JS. Düzenle, `chrome://extensions` üzerinden **Yeni
 | Video boş geliyor | Offscreen doc düzgün açılmamış olabilir; `chrome://extensions` üzerinden uzantıyı yenile |
 | Network sekmesi boş | Service Worker'dan giden istekler yakalanmaz; sayfa fetch/XHR'i mı? |
 | ZIP butonu hata veriyor | `lib/download-libs.sh` çalıştırıldı mı? |
-| Kayıt 5 dk'dan önce kesildi | Sekme kapatıldı, başka tab'a geçildi veya Chrome bellek darlığı |
+| Kayıt beklenenden önce kesildi | Sekme kapatıldı, başka tab'a geçildi veya Chrome bellek darlığı |
+| Süre sınırını kaldırmak istiyorum | Popup'ta "5 dakika ile sınırla" toggle'ını kapat |
 
 ## Lisans
 
