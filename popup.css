@@ -1,0 +1,266 @@
+/* popup.css — kara kutu teması */
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  width: 320px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'SF Pro Display',
+    'Segoe UI', Roboto, sans-serif;
+  background: #0c0d10;
+  color: #e6e8eb;
+  -webkit-font-smoothing: antialiased;
+}
+
+.hdr {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px 10px;
+  border-bottom: 1px solid #1c1f24;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.logo .dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #ff3b3b;
+  box-shadow: 0 0 8px rgba(255, 59, 59, 0.5);
+}
+
+.logo .title {
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  font-size: 13px;
+}
+
+.ver {
+  font-size: 11px;
+  color: #6c7079;
+}
+
+.main {
+  padding: 14px 16px 18px;
+}
+
+.status {
+  background: #131418;
+  border: 1px solid #1c1f24;
+  border-radius: 10px;
+  padding: 12px 14px;
+  margin-bottom: 14px;
+}
+
+.status-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  padding: 4px 0;
+}
+
+.status-row .label {
+  color: #8a8f99;
+}
+
+.status-row .value {
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.counts {
+  display: flex;
+  gap: 6px;
+  padding-top: 8px;
+  border-top: 1px solid #1c1f24;
+  margin-top: 4px;
+  justify-content: flex-start;
+}
+
+.chip {
+  background: #1c1f24;
+  color: #c9ccd1;
+  border-radius: 999px;
+  padding: 3px 8px;
+  font-size: 10px;
+  font-weight: 500;
+}
+
+.rec-btn {
+  width: 100%;
+  background: #ff3b3b;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 14px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: background 0.15s;
+}
+
+.rec-btn:hover {
+  background: #ff5252;
+}
+
+.rec-btn.recording {
+  background: #2a2d33;
+  color: #ff8b8b;
+}
+
+.rec-btn.recording:hover {
+  background: #34373d;
+}
+
+.rec-icon {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #fff;
+  display: inline-block;
+}
+
+.rec-btn.recording .rec-icon {
+  background: #ff3b3b;
+  animation: pulse 1s infinite;
+  border-radius: 2px;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
+  }
+}
+
+.toggle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 12px;
+  padding: 10px 12px;
+  background: #131418;
+  border: 1px solid #1c1f24;
+  border-radius: 10px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.toggle input {
+  display: none;
+}
+
+.toggle-track {
+  position: relative;
+  width: 32px;
+  height: 18px;
+  background: #2a2d33;
+  border-radius: 999px;
+  transition: background 0.15s;
+  flex-shrink: 0;
+}
+
+.toggle-thumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 14px;
+  height: 14px;
+  background: #e6e8eb;
+  border-radius: 50%;
+  transition: left 0.15s;
+}
+
+.toggle input:checked ~ .toggle-track {
+  background: #ff3b3b;
+}
+
+.toggle input:checked ~ .toggle-track .toggle-thumb {
+  left: 16px;
+}
+
+.toggle-label {
+  font-size: 12px;
+  color: #c9ccd1;
+}
+
+.toggle.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.quality-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+  padding: 10px 12px;
+  background: #131418;
+  border: 1px solid #1c1f24;
+  border-radius: 10px;
+}
+
+.quality-label {
+  font-size: 12px;
+  color: #c9ccd1;
+  flex-shrink: 0;
+}
+
+.quality-select {
+  flex: 1;
+  background: #0c0d10;
+  color: #e6e8eb;
+  border: 1px solid #2a2d33;
+  border-radius: 6px;
+  padding: 6px 8px;
+  font-size: 11px;
+  font-family: inherit;
+  cursor: pointer;
+  outline: none;
+}
+
+.quality-select:focus {
+  border-color: #ff3b3b;
+}
+
+.quality-row.disabled {
+  opacity: 0.5;
+}
+
+.quality-row.disabled .quality-select {
+  pointer-events: none;
+}
+
+.hint {
+  margin: 12px 2px 0;
+  font-size: 11px;
+  color: #6c7079;
+  line-height: 1.5;
+  text-align: center;
+}
+
+.hint.warn {
+  color: #ffb84d;
+}
+
+.status.recording .status-row .value#statusText {
+  color: #ff5b5b;
+}

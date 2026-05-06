@@ -1,0 +1,14 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Repro Blackbox — Recorder</title>
+  </head>
+  <body>
+    <!--
+      Offscreen document. Service worker'da MediaRecorder olmadığı için
+      kayıt mantığı bu görünmez sayfada koşar. Kullanıcı bunu hiç görmez.
+    -->
+    <script src="offscreen.js"></script>
+  </body>
+</html>

@@ -1,0 +1,422 @@
+<!doctype html>
+<html lang="tr">
+  <head>
+    <meta charset="utf-8" />
+    <title>Repro Blackbox — Session Viewer</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        background: #0c0d10;
+        color: #e6e8eb;
+        font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'SF Pro Display',
+          'Segoe UI', Roboto, sans-serif;
+        font-size: 13px;
+      }
+      header {
+        padding: 16px 24px;
+        border-bottom: 1px solid #1c1f24;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+        flex-wrap: wrap;
+      }
+      .brand {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        font-weight: 600;
+        font-size: 15px;
+      }
+      .brand .dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: #ff3b3b;
+        box-shadow: 0 0 10px rgba(255, 59, 59, 0.6);
+      }
+      .meta {
+        display: flex;
+        gap: 14px;
+        flex-wrap: wrap;
+        font-size: 12px;
+        color: #8a8f99;
+      }
+      .meta b {
+        color: #e6e8eb;
+        font-weight: 600;
+        margin-right: 4px;
+      }
+      .actions {
+        display: flex;
+        gap: 8px;
+      }
+      button.btn {
+        background: #1c1f24;
+        color: #e6e8eb;
+        border: 1px solid #2a2d33;
+        border-radius: 8px;
+        padding: 9px 14px;
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+      }
+      button.btn:hover {
+        background: #25282e;
+        border-color: #3a3d44;
+      }
+      button.btn.primary {
+        background: #ff3b3b;
+        border-color: #ff3b3b;
+        color: #fff;
+      }
+      button.btn.primary:hover {
+        background: #ff5252;
+      }
+      .tabs {
+        display: flex;
+        border-bottom: 1px solid #1c1f24;
+        padding: 0 24px;
+      }
+      .tab {
+        padding: 12px 18px;
+        cursor: pointer;
+        font-size: 13px;
+        color: #8a8f99;
+        font-weight: 500;
+        border-bottom: 2px solid transparent;
+        margin-bottom: -1px;
+      }
+      .tab.active {
+        color: #fff;
+        border-bottom-color: #ff3b3b;
+      }
+      .tab .badge {
+        background: #1c1f24;
+        color: #c9ccd1;
+        border-radius: 999px;
+        padding: 1px 8px;
+        font-size: 10px;
+        margin-left: 6px;
+      }
+      .panel {
+        padding: 16px 24px;
+        display: none;
+      }
+      .panel.active {
+        display: block;
+      }
+      #videoMount {
+        background: #131418;
+        border: 1px solid #1c1f24;
+        border-radius: 10px;
+        padding: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        gap: 8px;
+      }
+      #videoMount video {
+        max-width: 100%;
+        width: 100%;
+        max-height: 70vh;
+        background: #000;
+        border-radius: 6px;
+      }
+      .video-empty {
+        color: #6c7079;
+        font-size: 13px;
+        padding: 60px 20px;
+        text-align: center;
+      }
+      .console-list,
+      .net-list {
+        background: #131418;
+        border: 1px solid #1c1f24;
+        border-radius: 10px;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        font-size: 12px;
+        max-height: 70vh;
+        overflow-y: auto;
+      }
+      .log-row {
+        display: flex;
+        gap: 10px;
+        padding: 8px 12px;
+        border-bottom: 1px solid #1c1f24;
+        align-items: flex-start;
+      }
+      .log-row:last-child {
+        border-bottom: none;
+      }
+      .log-row .lvl {
+        flex: 0 0 50px;
+        text-transform: uppercase;
+        font-weight: 700;
+        font-size: 10px;
+        padding-top: 1px;
+      }
+      .log-row .ts {
+        flex: 0 0 80px;
+        color: #6c7079;
+        font-size: 11px;
+      }
+      .log-row .msg {
+        flex: 1 1 auto;
+        white-space: pre-wrap;
+        word-break: break-word;
+      }
+      .lvl.error {
+        color: #ff5b5b;
+      }
+      .lvl.warn {
+        color: #ffb84d;
+      }
+      .lvl.info {
+        color: #5fb3ff;
+      }
+      .lvl.log,
+      .lvl.debug {
+        color: #8a8f99;
+      }
+      .net-row {
+        border-bottom: 1px solid #1c1f24;
+      }
+      .net-row:last-child {
+        border-bottom: none;
+      }
+      .net-head {
+        display: grid;
+        grid-template-columns: 60px 80px 1fr 80px 80px;
+        gap: 10px;
+        padding: 8px 12px;
+        cursor: pointer;
+        align-items: center;
+      }
+      .net-head:hover {
+        background: #181a1f;
+      }
+      .net-head .method {
+        font-weight: 700;
+        color: #c9ccd1;
+      }
+      .net-head .status {
+        font-weight: 700;
+      }
+      .status.s2 {
+        color: #4cd97b;
+      }
+      .status.s3 {
+        color: #5fb3ff;
+      }
+      .status.s4 {
+        color: #ffb84d;
+      }
+      .status.s5,
+      .status.s0 {
+        color: #ff5b5b;
+      }
+      .net-head .url {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .net-head .dur {
+        text-align: right;
+        color: #8a8f99;
+      }
+      .net-detail {
+        display: none;
+        padding: 12px 16px;
+        background: #0e0f12;
+        border-top: 1px solid #1c1f24;
+      }
+      .net-row.open .net-detail {
+        display: block;
+      }
+      .net-detail h4 {
+        margin: 0 0 6px;
+        font-size: 11px;
+        text-transform: uppercase;
+        color: #8a8f99;
+        letter-spacing: 0.05em;
+      }
+      .net-detail pre {
+        margin: 0 0 12px;
+        background: #131418;
+        border: 1px solid #1c1f24;
+        border-radius: 6px;
+        padding: 10px;
+        font-size: 11px;
+        max-height: 280px;
+        overflow: auto;
+        white-space: pre-wrap;
+        word-break: break-word;
+      }
+      .empty {
+        padding: 30px;
+        text-align: center;
+        color: #6c7079;
+      }
+      .ws-row {
+        display: grid;
+        grid-template-columns: 24px 80px 1fr;
+        gap: 10px;
+        padding: 8px 12px;
+        border-bottom: 1px solid #1c1f24;
+        align-items: flex-start;
+        cursor: pointer;
+      }
+      .ws-row:last-child {
+        border-bottom: none;
+      }
+      .ws-row:hover {
+        background: #181a1f;
+      }
+      .ws-row .arrow {
+        font-weight: 700;
+        text-align: center;
+      }
+      .ws-row.send .arrow {
+        color: #5fb3ff;
+      }
+      .ws-row.recv .arrow,
+      .ws-row.sse-msg .arrow {
+        color: #4cd97b;
+      }
+      .ws-row.open .arrow,
+      .ws-row.sse-open .arrow {
+        color: #ffb84d;
+      }
+      .ws-row.close .arrow {
+        color: #8a8f99;
+      }
+      .ws-row.error .arrow {
+        color: #ff5b5b;
+      }
+      .ws-row .ts {
+        color: #6c7079;
+        font-size: 11px;
+      }
+      .ws-row .body {
+        white-space: pre-wrap;
+        word-break: break-word;
+        max-height: 80px;
+        overflow: hidden;
+        position: relative;
+      }
+      .ws-row.expanded .body {
+        max-height: none;
+      }
+      .ws-row .url {
+        color: #6c7079;
+        font-size: 11px;
+        margin-bottom: 4px;
+      }
+      .toast {
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: #1c1f24;
+        border: 1px solid #2a2d33;
+        color: #e6e8eb;
+        padding: 10px 16px;
+        border-radius: 8px;
+        font-size: 12px;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.2s;
+      }
+      .toast.show {
+        opacity: 1;
+      }
+      .summary-cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+        gap: 10px;
+        margin-bottom: 14px;
+      }
+      .card {
+        background: #131418;
+        border: 1px solid #1c1f24;
+        border-radius: 10px;
+        padding: 10px 14px;
+      }
+      .card .k {
+        font-size: 11px;
+        color: #8a8f99;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+      .card .v {
+        font-size: 18px;
+        font-weight: 700;
+        margin-top: 4px;
+      }
+      .card .v.danger {
+        color: #ff5b5b;
+      }
+      .card .v.warn {
+        color: #ffb84d;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="brand">
+        <span class="dot"></span>
+        <span>Repro Blackbox</span>
+      </div>
+      <div class="meta" id="metaBar"></div>
+      <div class="actions">
+        <button class="btn" id="btnCopyMd">Markdown Kopyala</button>
+        <button class="btn" id="btnVideo">Videoyu İndir</button>
+        <button class="btn primary" id="btnZip">ZIP İndir</button>
+      </div>
+    </header>
+
+    <div class="tabs">
+      <div class="tab active" data-panel="video">Video</div>
+      <div class="tab" data-panel="console">
+        Console <span class="badge" id="badgeConsole">0</span>
+      </div>
+      <div class="tab" data-panel="network">
+        Network <span class="badge" id="badgeNetwork">0</span>
+      </div>
+      <div class="tab" data-panel="sockets">
+        Sockets <span class="badge" id="badgeSockets">0</span>
+      </div>
+    </div>
+
+    <section class="panel active" id="panel-video">
+      <div class="summary-cards" id="summary"></div>
+      <div id="videoMount">
+        <div class="video-empty" id="videoEmpty">Video yükleniyor…</div>
+      </div>
+    </section>
+
+    <section class="panel" id="panel-console">
+      <div class="console-list" id="consoleList"></div>
+    </section>
+
+    <section class="panel" id="panel-network">
+      <div class="net-list" id="netList"></div>
+    </section>
+
+    <section class="panel" id="panel-sockets">
+      <div class="net-list" id="wsList"></div>
+    </section>
+
+    <div class="toast" id="toast"></div>
+
+    <script src="lib/jszip.min.js"></script>
+    <script src="viewer.js"></script>
+  </body>
+</html>

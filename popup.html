@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="tr">
+  <head>
+    <meta charset="utf-8" />
+    <title>Repro Blackbox</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <header class="hdr">
+      <div class="logo">
+        <span class="dot"></span>
+        <span class="title">Repro Blackbox</span>
+      </div>
+      <div class="ver">v1.0</div>
+    </header>
+
+    <main class="main">
+      <section class="status" id="status">
+        <div class="status-row">
+          <span class="label">Durum</span>
+          <span class="value" id="statusText">Hazır</span>
+        </div>
+        <div class="status-row">
+          <span class="label">Süre</span>
+          <span class="value" id="elapsed">00:00</span>
+        </div>
+        <div class="status-row counts" id="counts" hidden>
+          <span class="chip" id="chip-audio">🔇 Sessiz</span>
+          <span class="chip" id="chip-console">0 log</span>
+          <span class="chip" id="chip-network">0 istek</span>
+        </div>
+      </section>
+
+      <button id="recBtn" class="rec-btn">
+        <span class="rec-icon"></span>
+        <span class="rec-label">Kaydı Başlat</span>
+      </button>
+
+      <label class="toggle" id="audioToggle">
+        <input type="checkbox" id="audioCheck" />
+        <span class="toggle-track"><span class="toggle-thumb"></span></span>
+        <span class="toggle-label">Sayfa sesini de kaydet</span>
+      </label>
+
+      <label class="toggle" id="limitToggle">
+        <input type="checkbox" id="limitCheck" checked />
+        <span class="toggle-track"><span class="toggle-thumb"></span></span>
+        <span class="toggle-label">Zaman sınırı (5 dk)</span>
+      </label>
+
+      <div class="quality-row" id="qualityRow">
+        <span class="quality-label">Kalite</span>
+        <select id="qualitySelect" class="quality-select">
+          <option value="low">Düşük · 720p · 15 fps · ~30 MB/5dk</option>
+          <option value="normal" selected>Normal · 1080p · 30 fps · ~55 MB/5dk</option>
+          <option value="high">Yüksek · 1080p · 60 fps · ~150 MB/5dk</option>
+          <option value="ultra">Ultra · 1440p · 60 fps · ~300 MB/5dk</option>
+        </select>
+      </div>
+
+      <p class="hint" id="hint">Bu sekmenin videosunu kaydeder. Maksimum 5 dakika.</p>
+    </main>
+
+    <script src="popup.js"></script>
+  </body>
+</html>
